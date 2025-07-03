@@ -3,4 +3,5 @@
     <string name="ordinary_coffee_house">Ordinary Coffee House</string>
     <string name="choose_coffee">Choose your coffee</string>
     <string name="loyalty_card">Loyalty card</string>
+    <string name="stamp_count">%1$d/%2$d</string>
 </resources>

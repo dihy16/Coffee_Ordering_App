@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         loyaltyViewModel.getLoyaltyProgress().observe(this, progress -> {
             if (progress != null) {
                 binding.loyaltyStatus.loyaltyProgressView.setProgress(progress.getCurrent(), progress.getTotal());
-                binding.loyaltyStatus.stampCnt.setText(progress.getCurrent() + "/" + progress.getTotal());
+                binding.loyaltyStatus.stampCnt.setText(getString(R.string.stamp_count, progress.getCurrent(), progress.getTotal()));
             }
         });
 
