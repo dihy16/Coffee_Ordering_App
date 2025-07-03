@@ -4,7 +4,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/blue_bg"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:id="@+id/loyaltyStatusRoot">
 
     <!-- Row 1: Title + Count -->
     <LinearLayout

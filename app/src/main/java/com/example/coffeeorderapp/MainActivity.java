@@ -8,40 +8,37 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import androidx.recyclerview.widget.GridLayoutManager;
 import com.example.coffeeorderapp.HomePage.Adapter.CoffeeAdapter;
-import androidx.recyclerview.widget.RecyclerView;
 import com.example.coffeeorderapp.HomePage.ViewModel.CoffeeViewModel;
 import androidx.lifecycle.ViewModelProvider;
-import com.example.coffeeorderapp.HomePage.View.LoyaltyProgressView;
 import com.example.coffeeorderapp.HomePage.ViewModel.LoyaltyViewModel;
+import com.example.coffeeorderapp.databinding.ActivityMainBinding;
 
-import android.util.Log;
-import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
+    private ActivityMainBinding binding;
     private CoffeeViewModel coffeeViewModel;
     private CoffeeAdapter adapter;
-    private LoyaltyProgressView loyaltyProgressView;
     private LoyaltyViewModel loyaltyViewModel;
-    private TextView stampCnt;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
-        loyaltyProgressView = findViewById(R.id.loyaltyProgressView);
-        stampCnt = findViewById(R.id.stampCnt);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
+        coffeeViewModel = new ViewModelProvider(this).get(CoffeeViewModel.class);
         loyaltyViewModel = new ViewModelProvider(this).get(LoyaltyViewModel.class);
+
+
         loyaltyViewModel.getLoyaltyProgress().observe(this, progress -> {
             if (progress != null) {
-                loyaltyProgressView.setProgress(progress.getCurrent(), progress.getTotal());
-                stampCnt.setText(String.valueOf(progress.getCurrent() + "/" + progress.getTotal()));
+                binding.loyaltyStatus.loyaltyProgressView.setProgress(progress.getCurrent(), progress.getTotal());
+                binding.loyaltyStatus.stampCnt.setText(progress.getCurrent() + "/" + progress.getTotal());
             }
         });
 
-        coffeeViewModel = new ViewModelProvider(this).get(CoffeeViewModel.class);
-        RecyclerView recyclerView = findViewById(R.id.coffeeRecyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         adapter = new CoffeeAdapter(new ArrayList<>());
-        recyclerView.setAdapter(adapter);
+        binding.coffeeRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        binding.coffeeRecyclerView.setAdapter(adapter);
 
         coffeeViewModel.getCoffees().observe(this, coffees -> adapter.updateItems(coffees));
     }

@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <include
-        android:id="@+id/loyalty_status"
+        android:id="@+id/loyaltyStatus"
         layout="@layout/loyalty_status"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -39,7 +39,7 @@
         android:padding="16dp"
         android:layout_marginTop="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/loyalty_status"
+        app:layout_constraintTop_toBottomOf="@id/loyaltyStatus"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
