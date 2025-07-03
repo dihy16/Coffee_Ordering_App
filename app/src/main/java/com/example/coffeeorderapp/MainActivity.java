@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.coffeeorderapp.HomePage.View.LoyaltyProgressView;
 import com.example.coffeeorderapp.HomePage.ViewModel.LoyaltyViewModel;
 
+import android.util.Log;
 import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
     private CoffeeViewModel coffeeViewModel;
@@ -32,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
         loyaltyViewModel.getLoyaltyProgress().observe(this, progress -> {
             if (progress != null) {
                 loyaltyProgressView.setProgress(progress.getCurrent(), progress.getTotal());
+                stampCnt.setText(String.valueOf(progress.getCurrent() + "/" + progress.getTotal()));
             }
-            stampCnt.setText(String.valueOf(progress.getCurrent() + "/" + progress.getTotal()));
         });
 
         coffeeViewModel = new ViewModelProvider(this).get(CoffeeViewModel.class);

@@ -5,7 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
 class LoyaltyViewModel : ViewModel() {
-    private val _loyaltyProgress = MutableLiveData<LoyaltyProgress>()
+    private val _loyaltyProgress = MutableLiveData<LoyaltyProgress>().apply{
+        value = LoyaltyProgress(7, 8)
+    }
     val loyaltyProgress: LiveData<LoyaltyProgress> = _loyaltyProgress
 
     data class LoyaltyProgress(

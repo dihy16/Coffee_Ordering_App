@@ -9,7 +9,7 @@ import com.example.coffeeorderapp.R
 
 class LoyaltyIconAdapter : RecyclerView.Adapter<LoyaltyIconViewHolder>() {
     private var totalIcons = 8
-    private var curNumIcons = 6
+    private var curNumIcons = 3
 
     fun updateProgress(filled: Int, total: Int = 8) {
         curNumIcons = filled
