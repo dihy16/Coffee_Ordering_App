@@ -23,7 +23,8 @@
             android:layout_height="wrap_content"
             android:text="Good morning"
             android:textSize="14sp"
-            android:textColor="#888" />
+            android:textColor="#888"
+            android:fontFamily="@font/poppins_regular"/>
 
         <TextView
             android:id="@+id/tvName"
