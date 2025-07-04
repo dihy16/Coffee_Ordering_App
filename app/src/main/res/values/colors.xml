@@ -4,6 +4,4 @@
     <color name="white">#FFFFFFFF</color>
     <color name="grey_navy">#324A59</color>
     <color name="coffee_grey">#D8D8D8</color>
-    <color name="primary_color">#324A59</color>
-    <color name="unselected_color">#80D8D8D8</color>
 </resources>
