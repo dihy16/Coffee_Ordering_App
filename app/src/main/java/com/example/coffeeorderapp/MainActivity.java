@@ -1,6 +1,7 @@
 package com.example.coffeeorderapp;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,5 +29,19 @@ public class MainActivity extends AppCompatActivity {
 
         binding.bottomNav.setOnApplyWindowInsetsListener(null);
         binding.bottomNav.setPadding(0, 0, 0, 0);
- }
+    }
+
+    public void hideBottomNav() {
+        View bottomNav = findViewById(R.id.bottomNav);
+        if (bottomNav != null) {
+            bottomNav.setVisibility(View.GONE);
+        }
+    }
+
+    public void showBottomNav() {
+        View bottomNav = findViewById(R.id.bottomNav);
+        if (bottomNav != null) {
+            bottomNav.setVisibility(View.VISIBLE);
+        }
+    }
 }

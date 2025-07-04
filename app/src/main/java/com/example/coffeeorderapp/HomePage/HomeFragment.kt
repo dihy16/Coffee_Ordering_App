@@ -46,7 +46,14 @@ class HomeFragment : Fragment() {
         }
 
         // 2) Coffee grid
-        coffeeAdapter = CoffeeAdapter(emptyList())
+        coffeeAdapter = CoffeeAdapter(emptyList()) { coffee ->
+            // Navigate to details fragment with coffee data
+            val action = HomeFragmentDirections.actionHomeFragmentToDetailsFragment(
+                coffeeName = coffee.name,
+                coffeeImageResId = coffee.imageResId
+            )
+            findNavController().navigate(action)
+        }
         binding.coffeeRecyclerView.apply {
             layoutManager = GridLayoutManager(requireContext(), 2)
             adapter = coffeeAdapter

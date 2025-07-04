@@ -7,7 +7,11 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.coffeeorderapp.HomePage.HomeFragment"
-        android:label="Home" />
+        android:label="Home">
+        <action
+            android:id="@+id/action_homeFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+    </fragment>
     <fragment
         android:id="@+id/rewardsFragment"
         android:name="com.example.coffeeorderapp.Rewards.RewardsFragment"
@@ -16,4 +20,16 @@
         android:id="@+id/ordersFragment"
         android:name="com.example.coffeeorderapp.Orders.OrdersFragment"
         android:label="Orders" />
+        
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="com.example.coffeeorderapp.Details.DetailsFragment"
+        android:label="Details">
+        <argument
+            android:name="coffeeName"
+            app:argType="string" />
+        <argument
+            android:name="coffeeImageResId"
+            app:argType="integer" />
+    </fragment>
 </navigation>
