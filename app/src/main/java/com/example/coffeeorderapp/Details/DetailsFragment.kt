@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -16,7 +17,10 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
+import com.example.coffeeorderapp.HomePage.Data.Coffee
 import com.example.coffeeorderapp.MainActivity
 import com.example.coffeeorderapp.R
 import com.example.coffeeorderapp.databinding.FragmentDetailsBinding
@@ -26,6 +30,7 @@ class DetailsFragment : Fragment() {
     private val binding get() = _binding!!
     
     private val args: DetailsFragmentArgs by navArgs()
+    private val viewModel: DetailsViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,31 +43,46 @@ class DetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         (activity as? MainActivity)?.hideBottomNav()
-        // Display coffee details from navigation arguments
-        binding.coffeeImage.setImageResource(args.coffeeImageResId)
-        binding.coffeeName.text = args.coffeeName
-        binding.coffeeDescription.text = getCoffeeDescription(args.coffeeName)
-        binding.coffeePrice.text = getCoffeePrice(args.coffeeName)
-        
+
+        // Set coffee data in ViewModel from navigation args
+        viewModel.setCoffee(Coffee(args.coffeeName, args.coffeeImageResId))
+
+        // Observe coffee LiveData
+        viewModel.coffee.observe(viewLifecycleOwner) { coffee ->
+            binding.coffeeImage.setImageResource(coffee.imageResId)
+            binding.coffeeName.text = coffee.name
+            binding.coffeeDescription.text = getCoffeeDescription(coffee.name)
+            binding.coffeePrice.text = getCoffeePrice(coffee.name)
+        }
+
+        // Observe add-to-cart event
+        viewModel.addToCartEvent.observe(viewLifecycleOwner, Observer {
+            Toast.makeText(requireContext(), "Added to cart!", Toast.LENGTH_SHORT).show()
+        })
+
         // Back button functionality
         binding.backButton.setOnClickListener {
             requireActivity().onBackPressed()
         }
 
-        // Compose Add to Cart Button
+        // Compose Add to Cart Button using ViewModel
         binding.addToCartComposeView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 MaterialTheme {
-                    Button(onClick = { /* TODO: Implement add to cart */ }, colors= ButtonDefaults.buttonColors(
-                        containerColor = colorResource(R.color.grey_navy),
-                        contentColor = Color.White
-                    )) {
-                        Text(text = "Add to Cart",
+                    Button(
+                        onClick = { viewModel.addToCart() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colorResource(R.color.grey_navy),
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(
+                            text = "Add to Cart",
                             fontSize = 16.sp,
-                            fontFamily = FontFamily(Font(R.font.poppins_bold)))
+                            fontFamily = FontFamily(Font(R.font.poppins_bold))
+                        )
                     }
                 }
             }
