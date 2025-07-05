@@ -13,7 +13,12 @@ enum class SelectType { Hot, Cold }
 enum class SizeType { Small, Medium, Large }
 enum class IceAmount { None, Some, A_Lot }
 
-data class CartItem(val coffee: com.example.coffeeorderapp.HomePage.Data.Coffee, val customization: CoffeeCustomization, val totalPrice: Double)
+data class CartItem(
+    val id: Int = 0,
+    val coffee: com.example.coffeeorderapp.HomePage.Data.Coffee, 
+    val customization: CoffeeCustomization, 
+    val totalPrice: Double
+)
 
 object CartRepository {
     private val cartItems = mutableListOf<CartItem>()

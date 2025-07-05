@@ -1,39 +1,52 @@
 package com.example.coffeeorderapp.cart.ViewModel
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.coffeeorderapp.Details.Customization.CartItem
-import com.example.coffeeorderapp.Details.Customization.CartRepository
+import com.example.coffeeorderapp.cart.data.DatabaseModule
+import kotlinx.coroutines.launch
 
-class CartViewModel : ViewModel() {
-    private val _cartItems = MutableLiveData<List<CartItem>>(CartRepository.getItems())
+class CartViewModel(application: Application) : AndroidViewModel(application) {
+    private val cartRepository = DatabaseModule.getCartRepository(application)
+    
+    private val _cartItems = MutableLiveData<List<CartItem>>()
     val cartItems: LiveData<List<CartItem>> = _cartItems
 
-    val totalPrice: LiveData<Double> = MutableLiveData(
-        CartRepository.getItems().sumOf { it.totalPrice }
-    )
+    private val _totalPrice = MutableLiveData<Double>()
+    val totalPrice: LiveData<Double> = _totalPrice
 
     init {
-        android.util.Log.d("CartViewModel", "Initialized with ${CartRepository.getItems().size} items")
-        android.util.Log.d("CartViewModel", "Initial total price: ${CartRepository.getItems().sumOf { it.totalPrice }}")
+        loadCartItems()
+    }
+
+    private fun loadCartItems() {
+        viewModelScope.launch {
+            val items = cartRepository.getAllItems()
+            _cartItems.value = items
+            _totalPrice.value = items.sumOf { it.totalPrice }
+        }
     }
 
     fun removeItem(item: CartItem) {
-        CartRepository.getItems().toMutableList().let { list ->
-            list.remove(item)
-            CartRepository.clear()
-            list.forEach { CartRepository.addItem(it) }
-            _cartItems.value = CartRepository.getItems()
-            (totalPrice as MutableLiveData).value = list.sumOf { it.totalPrice }
+        android.util.Log.d("CartViewModel", "Removing item with id: ${item.id}, name: ${item.coffee.name}")
+        viewModelScope.launch {
+            cartRepository.removeItem(item)
+            android.util.Log.d("CartViewModel", "Item removed from database, reloading cart")
+            loadCartItems() // Reload to update UI
+        }
+    }
+
+    fun addItem(item: CartItem) {
+        viewModelScope.launch {
+            cartRepository.addItem(item)
+            loadCartItems() // Reload to update UI
         }
     }
 
     fun refreshCart() {
-        val items = CartRepository.getItems()
-        val total = items.sumOf { it.totalPrice }
-        android.util.Log.d("CartViewModel", "Refreshing cart: ${items.size} items, total: $total")
-        _cartItems.value = items
-        (totalPrice as MutableLiveData).value = total
+        loadCartItems()
     }
 } 

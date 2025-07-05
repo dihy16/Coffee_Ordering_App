@@ -8,20 +8,15 @@ import androidx.navigation.fragment.findNavController
 import com.example.coffeeorderapp.R
 import com.example.coffeeorderapp.MainActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.lifecycle.Observer
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import android.widget.Button
 import android.widget.ImageButton
 import com.example.coffeeorderapp.cart.ViewModel.CartViewModel
-import com.example.coffeeorderapp.Details.Customization.CartRepository
 import androidx.recyclerview.widget.ItemTouchHelper
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import androidx.core.content.ContextCompat
-import android.graphics.BitmapFactory
-import android.graphics.Bitmap
 import android.widget.LinearLayout
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.runtime.Composable
@@ -48,7 +43,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.res.stringResource
@@ -87,8 +81,14 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.adapterPosition
-                val item = cartAdapter.items[position]
-                viewModel.removeItem(item)
+                android.util.Log.d("CartFragment", "Swiped item at position: $position")
+                if (position != RecyclerView.NO_POSITION && position < cartAdapter.items.size) {
+                    val item = cartAdapter.items[position]
+                    android.util.Log.d("CartFragment", "Removing item: ${item.coffee.name}")
+                    viewModel.removeItem(item)
+                } else {
+                    android.util.Log.e("CartFragment", "Invalid position: $position, items size: ${cartAdapter.items.size}")
+                }
             }
 
             override fun onChildDraw(

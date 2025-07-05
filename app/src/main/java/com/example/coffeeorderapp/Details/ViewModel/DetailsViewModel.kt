@@ -1,16 +1,21 @@
 package com.example.coffeeorderapp.Details.ViewModel
 
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.coffeeorderapp.Details.Customization.CartItem
-import com.example.coffeeorderapp.Details.Customization.CartRepository
+import com.example.coffeeorderapp.cart.data.DatabaseModule
 import com.example.coffeeorderapp.HomePage.Data.Coffee
 import com.example.coffeeorderapp.Details.Customization.CoffeeCustomization
 import com.example.coffeeorderapp.Details.Customization.ShotType
 import com.example.coffeeorderapp.Details.Customization.SizeType
+import kotlinx.coroutines.launch
 
-class DetailsViewModel : ViewModel() {
+class DetailsViewModel(application: Application) : AndroidViewModel(application) {
+    private val cartRepository = DatabaseModule.getCartRepository(application)
+    
     private val _coffee = MutableLiveData<Coffee>()
     val coffee: LiveData<Coffee> = _coffee
 
@@ -64,7 +69,10 @@ class DetailsViewModel : ViewModel() {
         // Use the stored coffee object which has the correct price
         val storedCoffee = _coffee.value ?: coffee
         android.util.Log.d("DetailsViewModel", "Adding to cart: ${storedCoffee.name}, price: $currentPrice, quantity: ${custom.quantity}")
-        CartRepository.addItem(CartItem(storedCoffee, custom, currentPrice))
-        _addToCartEvent.value = Unit
+        
+        viewModelScope.launch {
+            cartRepository.addItem(CartItem(id = 0, storedCoffee, custom, currentPrice))
+            _addToCartEvent.value = Unit
+        }
     }
 } 
