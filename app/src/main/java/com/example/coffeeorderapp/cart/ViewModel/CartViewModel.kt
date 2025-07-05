@@ -49,4 +49,11 @@ class CartViewModel(application: Application) : AndroidViewModel(application) {
     fun refreshCart() {
         loadCartItems()
     }
+
+    fun clearCart() {
+        viewModelScope.launch {
+            cartRepository.clearCart()
+            loadCartItems()
+        }
+    }
 } 

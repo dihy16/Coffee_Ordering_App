@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.coffeeorderapp.Orders.OrderDao
+import com.example.coffeeorderapp.Orders.OrderRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,6 +20,7 @@ object DatabaseModule {
                 AppDatabase::class.java,
                 "coffee_order_database"
             )
+            .fallbackToDestructiveMigration()
             .addCallback(object : RoomDatabase.Callback() {
                 override fun onCreate(db: SupportSQLiteDatabase) {
                     super.onCreate(db)
@@ -38,6 +41,14 @@ object DatabaseModule {
 
     fun getCartRepository(context: Context): CartRepository {
         return CartRepository(getCartDao(context))
+    }
+
+    fun getOrderDao(context: Context): OrderDao {
+        return getDatabase(context).orderDao()
+    }
+
+    fun getOrderRepository(context: Context): OrderRepository {
+        return OrderRepository(getDatabase(context))
     }
 
     private suspend fun seedInitialData() {

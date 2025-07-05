@@ -20,14 +20,17 @@
         android:id="@+id/ordersFragment"
         android:name="com.example.coffeeorderapp.Orders.OrdersFragment"
         android:label="Orders" />
-        
+    <fragment
+        android:id="@+id/orderSuccessFragment"
+        android:name="com.example.coffeeorderapp.Orders.OrderSuccessFragment"
+        android:label="Order Success" />
     <fragment
         android:id="@+id/cartFragment"
         android:name="com.example.coffeeorderapp.cart.CartFragment"
         android:label="Cart">
         <action
-            android:id="@+id/action_cartFragment_to_ordersFragment"
-            app:destination="@id/ordersFragment" />
+            android:id="@+id/action_cartFragment_to_orderSuccessFragment"
+            app:destination="@id/orderSuccessFragment" />
     </fragment>
     <fragment
         android:id="@+id/detailsFragment"

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.coffeeorderapp.R
 import com.example.coffeeorderapp.MainActivity
@@ -46,12 +47,20 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.ui.res.stringResource
+import com.example.coffeeorderapp.Orders.ViewModel.OrderViewModel
+import com.example.coffeeorderapp.Orders.OrderEntity
+import com.example.coffeeorderapp.Orders.OrderItemEntity
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 private val poppinsRegular = FontFamily(Font(R.font.poppins_regular))
 
 class CartFragment : Fragment(R.layout.fragment_cart) {
     private val viewModel: CartViewModel by viewModels()
+    private val orderViewModel: OrderViewModel by activityViewModels()
     private lateinit var cartAdapter: CartAdapter
+    private var pendingOrderAdded = false
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -152,13 +161,47 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
             totalPriceView?.text = "$${"%.2f".format(price)}"
         }
 
+        orderViewModel.ongoingOrders.observe(viewLifecycleOwner) { orders ->
+            if (pendingOrderAdded && orders.isNotEmpty()) {
+                findNavController().navigate(R.id.action_cartFragment_to_orderSuccessFragment)
+                pendingOrderAdded = false
+            }
+        }
+
         val bottomLayout = view.findViewById<LinearLayout>(R.id.cartBottomLayout)
         val composeFAB = ComposeView(requireContext()).apply {
             setContent {
                 val totalPrice by viewModel.totalPrice.observeAsState(0.0)
                 BottomBarWithCheckout(
                     totalPrice = totalPrice,
-                    onCheckout = { findNavController().navigate(R.id.action_cartFragment_to_ordersFragment) }
+                    onCheckout = {
+                        val cartItems = viewModel.cartItems.value ?: emptyList()
+                        if (cartItems.isNotEmpty()) {
+                            val order = OrderEntity(
+                                date = getCurrentDateTimeString(),
+                                address = "3 Addersion Court Chino Hills, HO56824, United State",
+                                status = "ongoing",
+                                totalPrice = cartItems.sumOf { it.totalPrice }
+                            )
+                            val orderItems = cartItems.map { item ->
+                                OrderItemEntity(
+                                    orderId = 0, // will be set in repository
+                                    coffeeName = item.coffee.name,
+                                    imageResId = item.coffee.imageResId,
+                                    price = item.totalPrice,
+                                    quantity = item.customization.quantity,
+                                    shot = item.customization.shot.name,
+                                    select = item.customization.select.name,
+                                    size = item.customization.size.name,
+                                    ice = item.customization.ice.name
+                                )
+                            }
+                            orderViewModel.addOrderWithItems(order, orderItems)
+                            viewModel.clearCart()
+                            pendingOrderAdded = true
+                        }
+                        // Do NOT navigate here!
+                    }
                 )
             }
         }
@@ -175,6 +218,12 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
     override fun onPause() {
         (activity as? MainActivity)?.showBottomNav()
         super.onPause()
+    }
+
+    // Helper function to get current date and time string
+    private fun getCurrentDateTimeString(): String {
+        val sdf = SimpleDateFormat("dd MMMM | HH:mm a", Locale.getDefault())
+        return sdf.format(Date())
     }
 }
 
