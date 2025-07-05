@@ -6,12 +6,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.coffeeorderapp.HomePage.Data.Coffee  // your data class
+import com.example.coffeeorderapp.cart.data.ProductEntity
 import com.example.coffeeorderapp.R
 
 class CoffeeAdapter(
-    private var items: List<Coffee>,
-    private val onItemClick: (Coffee) -> Unit
+    private var items: List<ProductEntity>,
+    private val onItemClick: (ProductEntity) -> Unit
 ) : RecyclerView.Adapter<CoffeeAdapter.CoffeeViewHolder>() {
 
     class CoffeeViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -38,7 +38,7 @@ class CoffeeAdapter(
 
     override fun getItemCount(): Int = items.size
 
-    fun updateItems(newItems: List<Coffee>) {
+    fun updateItems(newItems: List<ProductEntity>) {
         items = newItems
         notifyDataSetChanged()
     }

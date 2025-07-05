@@ -13,9 +13,17 @@
             app:destination="@id/detailsFragment" />
     </fragment>
     <fragment
+        android:id="@+id/redeemFragment"
+        android:name="com.example.coffeeorderapp.Rewards.RedeemFragment"
+        android:label="Redeem" />
+    <fragment
         android:id="@+id/rewardsFragment"
         android:name="com.example.coffeeorderapp.Rewards.RewardsFragment"
-        android:label="Rewards" />
+        android:label="Rewards">
+        <action
+            android:id="@+id/action_rewardsFragment_to_redeemFragment"
+            app:destination="@id/redeemFragment" />
+    </fragment>
     <fragment
         android:id="@+id/ordersFragment"
         android:name="com.example.coffeeorderapp.Orders.OrdersFragment"

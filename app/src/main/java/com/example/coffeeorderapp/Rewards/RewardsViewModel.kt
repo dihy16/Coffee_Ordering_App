@@ -82,6 +82,31 @@ class RewardsViewModel(application: Application) : AndroidViewModel(application)
         return totalPrice.toInt()
     }
 
+    // TODO: Remove this after debug
+    fun setStampsForDebug(stamps: Int) {
+        viewModelScope.launch {
+            rewardsRepository.setStamps(stamps)
+        }
+    }
+
+    fun setPointsForDebug(points: Int) {
+        viewModelScope.launch {
+            rewardsRepository.setPoints(points)
+        }
+    }
+
+    fun redeemWithPoints(pointsToSubtract: Int, onResult: (Boolean) -> Unit) {
+        val currentPoints = _totalPoints.value ?: 0
+        if (currentPoints >= pointsToSubtract) {
+            viewModelScope.launch {
+                rewardsRepository.setPoints(currentPoints - pointsToSubtract)
+                onResult(true)
+            }
+        } else {
+            onResult(false)
+        }
+    }
+
     data class RewardHistoryItem(
         val coffeeName: String,
         val date: String,

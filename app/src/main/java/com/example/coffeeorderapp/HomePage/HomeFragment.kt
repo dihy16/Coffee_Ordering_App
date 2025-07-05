@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.coffeeorderapp.HomePage.Adapter.CoffeeAdapter
@@ -14,13 +13,23 @@ import com.example.coffeeorderapp.HomePage.ViewModel.CoffeeViewModel
 import com.example.coffeeorderapp.HomePage.ViewModel.LoyaltyViewModel
 import com.example.coffeeorderapp.R
 import com.example.coffeeorderapp.databinding.FragmentHomeBinding
+import com.example.coffeeorderapp.cart.data.DatabaseModule
+import androidx.lifecycle.ViewModelProvider
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
     // Fragment‑scoped ViewModels
-    private val coffeeViewModel by viewModels<CoffeeViewModel>()
+    private val coffeeViewModel: CoffeeViewModel by viewModels {
+        object : ViewModelProvider.Factory {
+            override fun <T : androidx.lifecycle.ViewModel> create(modelClass: Class<T>): T {
+                val repository = DatabaseModule.getProductRepository(requireContext().applicationContext)
+                @Suppress("UNCHECKED_CAST")
+                return CoffeeViewModel(repository) as T
+            }
+        }
+    }
     private val loyaltyViewModel by viewModels<LoyaltyViewModel>()
 
     private lateinit var coffeeAdapter: CoffeeAdapter
@@ -61,6 +70,7 @@ class HomeFragment : Fragment() {
         coffeeViewModel.coffees.observe(viewLifecycleOwner) {
             coffeeAdapter.updateItems(it)
         }
+        coffeeViewModel.loadCoffees()
     }
 
     override fun onDestroyView() {

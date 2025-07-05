@@ -7,6 +7,9 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.coffeeorderapp.Orders.OrderDao
 import com.example.coffeeorderapp.Orders.OrderRepository
 import com.example.coffeeorderapp.Rewards.RewardStatusDao
+import com.example.coffeeorderapp.cart.data.ProductDao
+import com.example.coffeeorderapp.cart.data.ProductEntity
+import com.example.coffeeorderapp.cart.data.ProductRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -56,17 +59,24 @@ object DatabaseModule {
         return getDatabase(context).rewardStatusDao()
     }
 
+    fun getProductDao(context: Context): ProductDao {
+        return getDatabase(context).productDao()
+    }
+
+    fun getProductRepository(context: Context): ProductRepository {
+        return ProductRepository(getProductDao(context))
+    }
+
     private suspend fun seedInitialData() {
-        // You can add initial data here if needed
-        // For example, if you want to pre-populate with some coffee items
-        // This is optional - you can leave it empty if you don't need initial data
-        
-        // Example of seeding initial data:
-        // val cartDao = getCartDao(context)
-        // val initialItems = listOf(
-        //     CartEntity(coffeeName = "Sample Coffee", imageResId = R.drawable.americano, price = 3.50, ...)
-        // )
-        // initialItems.forEach { cartDao.insert(it) }
+        // Seed initial product data
+        val productDao = database?.productDao()
+        val initialProducts = listOf(
+            ProductEntity(name = "Flat White", imageResId = com.example.coffeeorderapp.R.drawable.flatwhite, price = 3.00),
+            ProductEntity(name = "Cappuccino", imageResId = com.example.coffeeorderapp.R.drawable.cappucino, price = 3.25),
+            ProductEntity(name = "Americano", imageResId = com.example.coffeeorderapp.R.drawable.americano, price = 2.75),
+            ProductEntity(name = "Mocha", imageResId = com.example.coffeeorderapp.R.drawable.mocha, price = 4.00)
+        )
+        productDao?.insertAll(initialProducts)
     }
 
     // Public method to seed sample data for testing

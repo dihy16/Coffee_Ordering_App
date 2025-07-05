@@ -13,6 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.coffeeorderapp.R
 import com.example.coffeeorderapp.HomePage.View.LoyaltyProgressView
+import androidx.navigation.fragment.findNavController
+import android.widget.Toast
+import com.example.coffeeorderapp.cart.data.ProductEntity
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -50,6 +53,11 @@ class RewardsFragment : Fragment() {
         val loyaltyProgressView = loyaltyStatus.findViewById<LoyaltyProgressView>(R.id.loyaltyProgressView)
         val stampCnt = loyaltyStatus.findViewById<TextView>(R.id.stampCnt)
 
+        // DEBUG: Set stamps to 7 for testing. Remove before production!
+//        rewardsViewModel.setStampsForDebug(7)
+        // DEBUG: Set total points to 1000 for testing. Remove before production!
+//        rewardsViewModel.setPointsForDebug(1000)
+
         // Points section
         val pointsValue = view.findViewById<TextView>(R.id.pointsValue)
         val redeemButton = view.findViewById<Button>(R.id.redeemButton)
@@ -80,7 +88,7 @@ class RewardsFragment : Fragment() {
 
         // Redeem button (navigate to future screen)
         redeemButton.setOnClickListener {
-            // TODO: Implement navigation to redeem screen
+            findNavController().navigate(R.id.action_rewardsFragment_to_redeemFragment)
         }
 
         return view
@@ -89,6 +97,18 @@ class RewardsFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         // No need to call rewardsViewModel.loadRewardHistory() anymore
+    }
+
+    private fun redeemProductWithPoints(product: ProductEntity) {
+        val conversionRate = 100 // 1$ = 100 pts
+        val requiredPoints = (product.price * conversionRate).toInt()
+        rewardsViewModel.redeemWithPoints(requiredPoints) { success ->
+            if (success) {
+                Toast.makeText(requireContext(), "Redeemed successfully!", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "Not enough points!", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     companion object {

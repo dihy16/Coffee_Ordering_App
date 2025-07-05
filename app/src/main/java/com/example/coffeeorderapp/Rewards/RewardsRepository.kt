@@ -30,7 +30,7 @@ class RewardsRepository(context: Context) {
 
     suspend fun incrementStampsAndPoints(stampInc: Int, pointInc: Int) = withContext(Dispatchers.IO) {
         val current = rewardStatusDao.getStatus() ?: RewardStatusEntity()
-        val newStamps = (current.loyaltyStamps + stampInc).coerceAtMost(8)
+        val newStamps = if (current.loyaltyStamps + stampInc >= 8) 0 else current.loyaltyStamps + stampInc
         val newPoints = current.totalPoints + pointInc
         rewardStatusDao.insertOrUpdate(current.copy(loyaltyStamps = newStamps, totalPoints = newPoints))
     }

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingTop="16dp"
+    android:paddingBottom="16dp">
+
+    <ImageView
+        android:id="@+id/productImage"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:scaleType="centerCrop"
+        android:layout_marginEnd="16dp" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/productName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cafe Latte"
+            android:textColor="@color/grey_navy"
+            android:textSize="16sp"
+            android:fontFamily="@font/poppins_bold" />
+        <TextView
+            android:id="@+id/validityText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Valid until 04.07.21"
+            android:textColor="@color/coffee_grey"
+            android:textSize="12sp"
+            android:fontFamily="@font/poppins_regular"
+            android:paddingTop="2dp" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/redeemPointsButton"
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:backgroundTint="@color/grey_navy"
+        android:text="1340 pts"
+        android:textColor="@android:color/white"
+        android:fontFamily="@font/poppins_regular"
+        android:textSize="14sp"
+        android:layout_marginStart="16dp" />
+
+</LinearLayout> 
