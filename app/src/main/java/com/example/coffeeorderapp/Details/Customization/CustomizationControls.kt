@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.coffeeorderapp.HomePage.Data.Coffee
 import com.example.coffeeorderapp.R
 
@@ -188,5 +189,116 @@ private fun OptionRow(label: String, content: @Composable RowScope.() -> Unit) {
             verticalAlignment = Alignment.CenterVertically,
             content = content
         )
+    }
+}
+
+@Composable
+fun CartPreviewSheet(
+    cartItems: List<CartItem>,
+    totalPrice: Double,
+    onViewCart: () -> Unit,
+    onDismiss: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 8.dp)
+    ) {
+        Text(
+            text = "Cart Preview",
+            fontWeight = FontWeight.Bold,
+            fontFamily = poppinsRegular,
+            fontSize = 20.sp,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
+        Divider()
+        if (cartItems.isEmpty()) {
+            Text(
+                text = "Your cart is empty.",
+                fontFamily = poppinsRegular,
+                color = colorResource(R.color.coffee_grey),
+                modifier = Modifier.padding(vertical = 24.dp)
+            )
+        } else {
+            Column(
+                modifier = Modifier
+                    .weight(1f, fill = false)
+                    .padding(vertical = 8.dp)
+            ) {
+                cartItems.forEach { item ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = item.coffee.name,
+                                fontWeight = FontWeight.Bold,
+                                fontFamily = poppinsRegular,
+                                fontSize = 16.sp
+                            )
+                            Text(
+                                text = "${item.customization.shot.name.lowercase()} | ${item.customization.select.name.lowercase()} | ${item.customization.size.name.lowercase()} | ${item.customization.ice.name.replace("_", " ").lowercase()}",
+                                fontSize = 12.sp,
+                                color = colorResource(R.color.coffee_grey),
+                                fontFamily = poppinsRegular
+                            )
+                            Text(
+                                text = "x${item.customization.quantity}",
+                                fontSize = 12.sp,
+                                color = colorResource(R.color.coffee_grey),
+                                fontFamily = poppinsRegular
+                            )
+                        }
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            text = "$${"%.2f".format(item.totalPrice)}",
+                            fontWeight = FontWeight.Bold,
+                            fontFamily = poppinsRegular,
+                            fontSize = 16.sp,
+                            color = colorResource(R.color.grey_navy)
+                        )
+                    }
+                    Divider()
+                }
+            }
+            Spacer(Modifier.height(8.dp))
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = "Total:",
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = poppinsRegular,
+                    fontSize = 16.sp,
+                    modifier = Modifier.weight(1f)
+                )
+                Text(
+                    text = "$${"%.2f".format(totalPrice)}",
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = poppinsRegular,
+                    fontSize = 18.sp,
+                    color = colorResource(R.color.grey_navy)
+                )
+            }
+            Spacer(Modifier.height(16.dp))
+            Button(
+                onClick = onViewCart,
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.grey_navy))
+            ) {
+                Text("View Full Cart", color = Color.White, fontFamily = poppinsRegular)
+            }
+            TextButton(
+                onClick = onDismiss,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Close", fontFamily = poppinsRegular)
+            }
+        }
     }
 }

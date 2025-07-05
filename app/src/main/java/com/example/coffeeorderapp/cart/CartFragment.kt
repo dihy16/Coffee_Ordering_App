@@ -57,7 +57,7 @@ import java.util.Locale
 private val poppinsRegular = FontFamily(Font(R.font.poppins_regular))
 
 class CartFragment : Fragment(R.layout.fragment_cart) {
-    private val viewModel: CartViewModel by viewModels()
+    private val viewModel: CartViewModel by activityViewModels()
     private val orderViewModel: OrderViewModel by activityViewModels()
     private lateinit var cartAdapter: CartAdapter
     private var pendingOrderAdded = false
