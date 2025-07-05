@@ -66,11 +66,16 @@ class RedeemFragment : Fragment() {
         val conversionRate = 100 // 1$ = 100 pts
         val requiredPoints = (product.price * conversionRate).toInt()
         val currentPoints = rewardsViewModel.totalPoints.value ?: 0
-        if (currentPoints >= requiredPoints) {
-            rewardsViewModel.setPointsForDebug(currentPoints - requiredPoints)
-            Toast.makeText(requireContext(), "Redeemed successfully!", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(requireContext(), "Not enough points!", Toast.LENGTH_SHORT).show()
+        println("DEBUG: RedeemFragment - Product: ${product.name}, Price: ${product.price}, Required points: $requiredPoints, Current points: $currentPoints")
+        
+        rewardsViewModel.redeemWithPoints(requiredPoints) { success ->
+            if (success) {
+                println("DEBUG: RedeemFragment - Redeem successful for ${product.name}")
+                Toast.makeText(requireContext(), "Redeemed successfully!", Toast.LENGTH_SHORT).show()
+            } else {
+                println("DEBUG: RedeemFragment - Redeem failed for ${product.name} - not enough points")
+                Toast.makeText(requireContext(), "Not enough points!", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

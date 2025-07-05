@@ -23,6 +23,19 @@ class RewardsRepository(context: Context) {
         rewardStatusDao.insertOrUpdate(current.copy(totalPoints = points))
     }
 
+    suspend fun subtractPoints(pointsToSubtract: Int): Boolean = withContext(Dispatchers.IO) {
+        val current = rewardStatusDao.getStatus() ?: RewardStatusEntity()
+        if (current.totalPoints >= pointsToSubtract) {
+            val newPoints = current.totalPoints - pointsToSubtract
+            rewardStatusDao.updatePoints(newPoints)
+            println("DEBUG: RewardsRepository - Subtracted $pointsToSubtract points. From: ${current.totalPoints}, To: $newPoints")
+            true
+        } else {
+            println("DEBUG: RewardsRepository - Not enough points to subtract. Current: ${current.totalPoints}, Required: $pointsToSubtract")
+            false
+        }
+    }
+
     suspend fun resetStamps() = withContext(Dispatchers.IO) {
         val current = rewardStatusDao.getStatus() ?: RewardStatusEntity()
         rewardStatusDao.insertOrUpdate(current.copy(loyaltyStamps = 0))

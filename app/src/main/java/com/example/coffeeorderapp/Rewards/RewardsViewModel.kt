@@ -27,6 +27,8 @@ class RewardsViewModel(application: Application) : AndroidViewModel(application)
     private val _rewardHistory = MutableLiveData<List<RewardHistoryItem>>()
     val rewardHistory: LiveData<List<RewardHistoryItem>> = _rewardHistory
 
+
+
     init {
         observeStatus()
         observeRewardHistory()
@@ -54,6 +56,17 @@ class RewardsViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    // Call this when a new order is completed to add points
+    fun addPointsFromOrder(orderTotal: Double) {
+        viewModelScope.launch {
+            val pointsToAdd = calculatePoints(orderTotal)
+            val currentPoints = _totalPoints.value ?: 0
+            val newPoints = currentPoints + pointsToAdd
+            println("DEBUG: Adding $pointsToAdd points from order ($$orderTotal). From: $currentPoints, To: $newPoints")
+            rewardsRepository.setPoints(newPoints)
+        }
+    }
+
     private fun observeRewardHistory() {
         viewModelScope.launch {
             while (true) {
@@ -73,23 +86,12 @@ class RewardsViewModel(application: Application) : AndroidViewModel(application)
                 }.sortedByDescending { it.date }
                 _rewardHistory.postValue(history)
                 
-                // Sync total points with order history
-                syncTotalPointsWithHistory(orders)
-                
                 kotlinx.coroutines.delay(500)
             }
         }
     }
 
-    private suspend fun syncTotalPointsWithHistory(orders: List<OrderWithItems>) {
-        val calculatedTotalPoints = orders.sumOf { calculatePoints(it.order.totalPrice) }
-        val currentTotalPoints = _totalPoints.value ?: 0
-        
-        if (calculatedTotalPoints != currentTotalPoints) {
-            println("DEBUG: Syncing total points - Calculated: $calculatedTotalPoints, Current: $currentTotalPoints")
-            rewardsRepository.setPoints(calculatedTotalPoints)
-        }
-    }
+
 
     private fun calculatePoints(totalPrice: Double): Int {
         // 1 point per $1 spent, rounded down
@@ -111,25 +113,28 @@ class RewardsViewModel(application: Application) : AndroidViewModel(application)
 
     fun redeemWithPoints(pointsToSubtract: Int, onResult: (Boolean) -> Unit) {
         val currentPoints = _totalPoints.value ?: 0
+        println("DEBUG: Redeem attempt - Current points: $currentPoints, Required: $pointsToSubtract")
+        
         if (currentPoints >= pointsToSubtract) {
             viewModelScope.launch {
-                rewardsRepository.setPoints(currentPoints - pointsToSubtract)
-                onResult(true)
+                val success = rewardsRepository.subtractPoints(pointsToSubtract)
+                if (success) {
+                    val newPoints = currentPoints - pointsToSubtract
+                    _totalPoints.postValue(newPoints)
+                    println("DEBUG: Redeem successful - Updated UI to $newPoints points")
+                    onResult(true)
+                } else {
+                    println("DEBUG: Redeem failed in repository")
+                    onResult(false)
+                }
             }
         } else {
+            println("DEBUG: Not enough points - Current: $currentPoints, Required: $pointsToSubtract")
             onResult(false)
         }
     }
 
-    // Manual sync method for debugging
-    fun syncPointsWithHistory() {
-        viewModelScope.launch {
-            val orders = orderRepository.getOrdersWithItemsByStatus("history")
-            val calculatedTotalPoints = orders.sumOf { calculatePoints(it.order.totalPrice) }
-            println("DEBUG: Manual sync - Orders: ${orders.size}, Calculated points: $calculatedTotalPoints")
-            rewardsRepository.setPoints(calculatedTotalPoints)
-        }
-    }
+
 
     data class RewardHistoryItem(
         val coffeeName: String,

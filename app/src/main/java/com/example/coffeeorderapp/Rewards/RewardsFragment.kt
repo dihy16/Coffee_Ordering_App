@@ -86,8 +86,7 @@ class RewardsFragment : Fragment() {
             historyAdapter.updateItems(history)
         })
 
-        // Sync points with history when fragment is created
-        rewardsViewModel.syncPointsWithHistory()
+        // Points are now managed by OrderViewModel when orders are completed
 
         // Redeem button (navigate to future screen)
         redeemButton.setOnClickListener {
