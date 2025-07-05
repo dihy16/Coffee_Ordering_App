@@ -6,6 +6,7 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.coffeeorderapp.Orders.OrderDao
 import com.example.coffeeorderapp.Orders.OrderRepository
+import com.example.coffeeorderapp.Rewards.RewardStatusDao
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -49,6 +50,10 @@ object DatabaseModule {
 
     fun getOrderRepository(context: Context): OrderRepository {
         return OrderRepository(getDatabase(context))
+    }
+
+    fun getRewardStatusDao(context: Context): RewardStatusDao {
+        return getDatabase(context).rewardStatusDao()
     }
 
     private suspend fun seedInitialData() {

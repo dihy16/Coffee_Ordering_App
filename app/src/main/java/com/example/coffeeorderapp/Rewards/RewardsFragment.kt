@@ -1,11 +1,18 @@
 package com.example.coffeeorderapp.Rewards
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.coffeeorderapp.R
+import com.example.coffeeorderapp.HomePage.View.LoyaltyProgressView
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -21,6 +28,8 @@ class RewardsFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+    private val rewardsViewModel by viewModels<RewardsViewModel>()
+    private lateinit var historyAdapter: RewardsHistoryAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +43,52 @@ class RewardsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_rewards, container, false)
+        val view = inflater.inflate(R.layout.fragment_rewards, container, false)
+
+        // Loyalty section
+        val loyaltyStatus = view.findViewById<View>(R.id.loyaltyStatus)
+        val loyaltyProgressView = loyaltyStatus.findViewById<LoyaltyProgressView>(R.id.loyaltyProgressView)
+        val stampCnt = loyaltyStatus.findViewById<TextView>(R.id.stampCnt)
+
+        // Points section
+        val pointsValue = view.findViewById<TextView>(R.id.pointsValue)
+        val redeemButton = view.findViewById<Button>(R.id.redeemButton)
+
+        // History section
+        val historyRecyclerView = view.findViewById<RecyclerView>(R.id.historyRecyclerView)
+        historyAdapter = RewardsHistoryAdapter(emptyList())
+        historyRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        historyRecyclerView.adapter = historyAdapter
+
+        // Observe ViewModel
+        rewardsViewModel.loyaltyStamps.observe(viewLifecycleOwner, Observer { stamps ->
+            loyaltyProgressView.setProgress(stamps, 8)
+            stampCnt.text = getString(R.string.stamp_count, stamps, 8)
+            // Reset logic: if 8, clicking loyalty card resets
+            loyaltyProgressView.setOnClickListener {
+                if (stamps >= 8) {
+                    rewardsViewModel.resetStamps()
+                }
+            }
+        })
+        rewardsViewModel.totalPoints.observe(viewLifecycleOwner, Observer { points ->
+            pointsValue.text = points.toString()
+        })
+        rewardsViewModel.rewardHistory.observe(viewLifecycleOwner, Observer { history ->
+            historyAdapter.updateItems(history)
+        })
+
+        // Redeem button (navigate to future screen)
+        redeemButton.setOnClickListener {
+            // TODO: Implement navigation to redeem screen
+        }
+
+        return view
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // No need to call rewardsViewModel.loadRewardHistory() anymore
     }
 
     companion object {

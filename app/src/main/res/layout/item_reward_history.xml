@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp"
+    android:gravity="center_vertical">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/coffeeName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Americano"
+            android:textColor="@color/grey_navy"
+            android:textSize="16sp"
+            android:fontFamily="@font/poppins_regular" />
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="24 June | 12:30 PM"
+            android:textColor="@color/coffee_grey"
+            android:textSize="12sp"
+            android:fontFamily="@font/poppins_regular"
+            android:paddingTop="2dp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/points"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+ 12 Pts"
+        android:textColor="@color/grey_navy"
+        android:textSize="16sp"
+        android:fontFamily="@font/poppins_regular"
+        android:gravity="end" />
+
+</LinearLayout> 

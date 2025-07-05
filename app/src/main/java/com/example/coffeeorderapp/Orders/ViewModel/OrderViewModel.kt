@@ -10,6 +10,7 @@ import com.example.coffeeorderapp.Orders.OrderItemEntity
 import com.example.coffeeorderapp.Orders.OrderRepository
 import com.example.coffeeorderapp.Orders.OrderWithItems
 import com.example.coffeeorderapp.cart.data.DatabaseModule
+import com.example.coffeeorderapp.Rewards.RewardsRepository
 import kotlinx.coroutines.launch
 
 class OrderViewModel(application: Application) : AndroidViewModel(application) {
@@ -35,6 +36,9 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
     fun moveOrderToHistory(orderId: Int) {
         viewModelScope.launch {
             orderRepository.updateOrderStatus(orderId, "history")
+            // Increment loyalty and points
+            val rewardsRepo = RewardsRepository(getApplication())
+            rewardsRepo.incrementStampsAndPoints(1, 12)
             loadOrders()
         }
     }
