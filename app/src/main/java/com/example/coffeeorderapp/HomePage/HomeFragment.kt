@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.coffeeorderapp.HomePage.Adapter.CoffeeAdapter
@@ -15,6 +17,7 @@ import com.example.coffeeorderapp.R
 import com.example.coffeeorderapp.databinding.FragmentHomeBinding
 import com.example.coffeeorderapp.cart.data.DatabaseModule
 import androidx.lifecycle.ViewModelProvider
+import com.example.coffeeorderapp.Profile.ViewModel.ProfileViewModel
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
@@ -31,6 +34,7 @@ class HomeFragment : Fragment() {
         }
     }
     private val loyaltyViewModel by viewModels<LoyaltyViewModel>()
+    private val profileViewModel: ProfileViewModel by activityViewModels()
 
     private lateinit var coffeeAdapter: CoffeeAdapter
 
@@ -52,6 +56,17 @@ class HomeFragment : Fragment() {
                     .setProgress(it.current, it.total)
                 binding.loyaltyStatus.stampCnt.text = getString(R.string.stamp_count, it.current, it.total)
             }
+        }
+
+        // Profile icon click
+        binding.header.root.findViewById<View>(R.id.iconProfile)?.setOnClickListener {
+            findNavController().navigate(R.id.profileFragment)
+        }
+
+        // Observe profile name and update header
+        profileViewModel.profile.observe(viewLifecycleOwner) { profile ->
+            val name = profile?.fullName ?: ""
+            binding.header.root.findViewById<TextView>(R.id.tvName)?.text = name
         }
 
         // 2) Coffee grid

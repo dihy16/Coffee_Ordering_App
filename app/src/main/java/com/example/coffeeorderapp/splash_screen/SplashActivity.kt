@@ -1,4 +1,4 @@
-package com.example.coffeeorderapp.Activity
+package com.example.coffeeorderapp.splash_screen
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge

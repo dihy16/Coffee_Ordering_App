@@ -10,6 +10,9 @@ import com.example.coffeeorderapp.Rewards.RewardStatusDao
 import com.example.coffeeorderapp.cart.data.ProductDao
 import com.example.coffeeorderapp.cart.data.ProductEntity
 import com.example.coffeeorderapp.cart.data.ProductRepository
+import com.example.coffeeorderapp.Profile.data.ProfileDao
+import com.example.coffeeorderapp.Profile.data.ProfileRepository
+import com.example.coffeeorderapp.Profile.Model.ProfileEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -67,6 +70,14 @@ object DatabaseModule {
         return ProductRepository(getProductDao(context))
     }
 
+    fun getProfileDao(context: Context): ProfileDao {
+        return getDatabase(context).profileDao()
+    }
+
+    fun getProfileRepository(context: Context): ProfileRepository {
+        return ProfileRepository(getProfileDao(context))
+    }
+
     private suspend fun seedInitialData() {
         // Seed initial product data
         val productDao = database?.productDao()
@@ -77,6 +88,17 @@ object DatabaseModule {
             ProductEntity(name = "Mocha", imageResId = com.example.coffeeorderapp.R.drawable.mocha, price = 4.00)
         )
         productDao?.insertAll(initialProducts)
+
+        // Seed initial profile data
+        val profileDao = database?.profileDao()
+        val initialProfile = ProfileEntity(
+            id = 1,
+            fullName = "Anderson",
+            phoneNumber = "+60134589525",
+            email = "Anderson@email.com",
+            address = "3 Addersion Court\nChino Hills, HO56824, United State"
+        )
+        profileDao?.insert(initialProfile)
     }
 
     // Public method to seed sample data for testing

@@ -54,4 +54,8 @@
             android:id="@+id/action_detailsFragment_to_cartFragment"
             app:destination="@id/cartFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.coffeeorderapp.Profile.ProfileFragment"
+        android:label="Profile" />
 </navigation>

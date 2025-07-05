@@ -53,12 +53,14 @@ import com.example.coffeeorderapp.Orders.OrderItemEntity
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import com.example.coffeeorderapp.Profile.ViewModel.ProfileViewModel
 
 private val poppinsRegular = FontFamily(Font(R.font.poppins_regular))
 
 class CartFragment : Fragment(R.layout.fragment_cart) {
     private val viewModel: CartViewModel by activityViewModels()
     private val orderViewModel: OrderViewModel by activityViewModels()
+    private val profileViewModel: ProfileViewModel by activityViewModels()
     private lateinit var cartAdapter: CartAdapter
     private var pendingOrderAdded = false
 
@@ -176,10 +178,11 @@ class CartFragment : Fragment(R.layout.fragment_cart) {
                     totalPrice = totalPrice,
                     onCheckout = {
                         val cartItems = viewModel.cartItems.value ?: emptyList()
-                        if (cartItems.isNotEmpty()) {
+                        val profile = profileViewModel.profile.value
+                        if (cartItems.isNotEmpty() && profile != null) {
                             val order = OrderEntity(
                                 date = getCurrentDateTimeString(),
-                                address = "3 Addersion Court Chino Hills, HO56824, United State",
+                                address = profile.address,
                                 status = "ongoing",
                                 totalPrice = cartItems.sumOf { it.totalPrice }
                             )

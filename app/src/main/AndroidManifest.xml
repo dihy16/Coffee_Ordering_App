@@ -13,7 +13,7 @@
         android:theme="@style/Theme.CoffeeOrderApp"
         tools:targetApi="31">
         <activity
-            android:name=".Activity.SplashActivity"
+            android:name=".splash_screen.SplashActivity"
             android:exported="true">
         </activity>
         <activity
