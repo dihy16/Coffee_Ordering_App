@@ -29,6 +29,26 @@ fun ProfileScreen(viewModel: ProfileViewModel, onBack: () -> Unit) {
     val poppinsBold = FontFamily(Font(R.font.poppins_bold))
     val poppinsRegular = FontFamily(Font(R.font.poppins_regular))
 
+    // Debug: Log profile state
+    LaunchedEffect(profile) {
+        println("DEBUG: ProfileScreen - Profile state changed: $profile")
+    }
+
+    // Create default profile if none exists
+    LaunchedEffect(profile) {
+        if (profile == null) {
+            println("DEBUG: ProfileScreen - No profile found, creating default profile")
+            val defaultProfile = com.example.coffeeorderapp.Profile.Model.ProfileEntity(
+                id = 1,
+                fullName = "Anderson",
+                phoneNumber = "+60134589525",
+                email = "Anderson@email.com",
+                address = "3 Addersion Court\nChino Hills, HO56824, United State"
+            )
+            viewModel.insertProfile(defaultProfile)
+        }
+    }
+
     // Local state for editing fields
     var fullName by remember { mutableStateOf("") }
     var phoneNumber by remember { mutableStateOf("") }

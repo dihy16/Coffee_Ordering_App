@@ -86,6 +86,9 @@ class RewardsFragment : Fragment() {
             historyAdapter.updateItems(history)
         })
 
+        // Sync points with history when fragment is created
+        rewardsViewModel.syncPointsWithHistory()
+
         // Redeem button (navigate to future screen)
         redeemButton.setOnClickListener {
             findNavController().navigate(R.id.action_rewardsFragment_to_redeemFragment)

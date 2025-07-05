@@ -83,8 +83,19 @@ class HomeFragment : Fragment() {
             adapter = coffeeAdapter
         }
         coffeeViewModel.coffees.observe(viewLifecycleOwner) {
+            println("DEBUG: HomeFragment received ${it.size} coffees: ${it.map { coffee -> coffee.name }}")
             coffeeAdapter.updateItems(it)
         }
+        
+        // Load coffees with a slight delay to ensure database is ready
+        view.post {
+            coffeeViewModel.loadCoffees()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Refresh data when fragment becomes visible
         coffeeViewModel.loadCoffees()
     }
 

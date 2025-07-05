@@ -23,9 +23,15 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         loadProfile()
     }
 
+    fun refreshProfile() {
+        loadProfile()
+    }
+
     fun loadProfile() {
         viewModelScope.launch {
-            _profile.value = profileRepository.getProfile()
+            val profile = profileRepository.getProfile()
+            println("DEBUG: ProfileViewModel loaded profile: $profile")
+            _profile.value = profile
         }
     }
 

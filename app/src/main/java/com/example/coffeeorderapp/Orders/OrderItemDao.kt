@@ -12,4 +12,7 @@ interface OrderItemDao {
 
     @Query("SELECT * FROM order_items WHERE orderId = :orderId")
     suspend fun getItemsForOrder(orderId: Int): List<OrderItemEntity>
+    
+    @Query("DELETE FROM order_items")
+    suspend fun deleteAll()
 } 

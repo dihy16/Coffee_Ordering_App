@@ -29,4 +29,7 @@ interface OrderDao {
     @Transaction
     @Query("SELECT * FROM orders ORDER BY date DESC")
     suspend fun getAllOrdersWithItems(): List<OrderWithItems>
+    
+    @Query("DELETE FROM orders")
+    suspend fun deleteAll()
 } 

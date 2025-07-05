@@ -72,8 +72,22 @@ class RewardsViewModel(application: Application) : AndroidViewModel(application)
                     )
                 }.sortedByDescending { it.date }
                 _rewardHistory.postValue(history)
+                
+                // Sync total points with order history
+                syncTotalPointsWithHistory(orders)
+                
                 kotlinx.coroutines.delay(500)
             }
+        }
+    }
+
+    private suspend fun syncTotalPointsWithHistory(orders: List<OrderWithItems>) {
+        val calculatedTotalPoints = orders.sumOf { calculatePoints(it.order.totalPrice) }
+        val currentTotalPoints = _totalPoints.value ?: 0
+        
+        if (calculatedTotalPoints != currentTotalPoints) {
+            println("DEBUG: Syncing total points - Calculated: $calculatedTotalPoints, Current: $currentTotalPoints")
+            rewardsRepository.setPoints(calculatedTotalPoints)
         }
     }
 
@@ -104,6 +118,16 @@ class RewardsViewModel(application: Application) : AndroidViewModel(application)
             }
         } else {
             onResult(false)
+        }
+    }
+
+    // Manual sync method for debugging
+    fun syncPointsWithHistory() {
+        viewModelScope.launch {
+            val orders = orderRepository.getOrdersWithItemsByStatus("history")
+            val calculatedTotalPoints = orders.sumOf { calculatePoints(it.order.totalPrice) }
+            println("DEBUG: Manual sync - Orders: ${orders.size}, Calculated points: $calculatedTotalPoints")
+            rewardsRepository.setPoints(calculatedTotalPoints)
         }
     }
 

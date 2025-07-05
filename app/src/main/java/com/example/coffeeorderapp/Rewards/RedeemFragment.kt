@@ -42,10 +42,14 @@ class RedeemFragment : Fragment() {
         recyclerView.adapter = adapter
 
         viewModel.products.observe(viewLifecycleOwner) { products ->
+            println("DEBUG: RedeemFragment received ${products.size} products: ${products.map { it.name }}")
             adapter.submitList(products)
         }
 
-        viewModel.loadProducts()
+        // Load products with a slight delay to ensure database is ready
+        view.post {
+            viewModel.loadProducts()
+        }
 
         // Back button
         view.findViewById<ImageButton>(R.id.backButton).setOnClickListener {
@@ -68,6 +72,12 @@ class RedeemFragment : Fragment() {
         } else {
             Toast.makeText(requireContext(), "Not enough points!", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Refresh data when fragment becomes visible
+        viewModel.loadProducts()
     }
 
     override fun onDestroyView() {

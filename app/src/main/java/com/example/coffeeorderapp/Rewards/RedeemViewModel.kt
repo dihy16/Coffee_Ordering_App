@@ -17,7 +17,9 @@ class RedeemViewModel(private val productRepository: ProductRepository) : ViewMo
 
     fun loadProducts() {
         viewModelScope.launch {
-            _products.value = productRepository.getThreeCheapestProducts()
+            val products = productRepository.getThreeCheapestProducts()
+            println("DEBUG: RedeemViewModel loaded ${products.size} cheapest products: ${products.map { it.name }}")
+            _products.value = products
         }
     }
 } 

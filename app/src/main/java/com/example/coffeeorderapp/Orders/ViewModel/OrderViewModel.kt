@@ -35,10 +35,24 @@ class OrderViewModel(application: Application) : AndroidViewModel(application) {
 
     fun moveOrderToHistory(orderId: Int) {
         viewModelScope.launch {
-            orderRepository.updateOrderStatus(orderId, "history")
-            // Increment loyalty and points
-            val rewardsRepo = RewardsRepository(getApplication())
-            rewardsRepo.incrementStampsAndPoints(1, 12)
+            // Get the order details before updating status
+            val ongoingOrders = orderRepository.getOrdersWithItemsByStatus("ongoing")
+            val orderToMove = ongoingOrders.find { it.order.id == orderId }
+            
+            if (orderToMove != null) {
+                // Calculate points based on order total (1 point per $1 spent)
+                val pointsToAdd = orderToMove.order.totalPrice.toInt()
+                
+                orderRepository.updateOrderStatus(orderId, "history")
+                // Increment loyalty and points based on actual order total
+                val rewardsRepo = RewardsRepository(getApplication())
+                rewardsRepo.incrementStampsAndPoints(1, pointsToAdd)
+                
+                println("DEBUG: Order moved to history - Order ID: $orderId, Total: $${orderToMove.order.totalPrice}, Points added: $pointsToAdd")
+            } else {
+                println("DEBUG: Order not found for ID: $orderId")
+            }
+            
             loadOrders()
         }
     }

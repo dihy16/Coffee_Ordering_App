@@ -15,4 +15,7 @@ interface CartDao {
 
     @Query("DELETE FROM cart")
     suspend fun clear()
+    
+    @Query("DELETE FROM cart")
+    suspend fun deleteAll()
 } 

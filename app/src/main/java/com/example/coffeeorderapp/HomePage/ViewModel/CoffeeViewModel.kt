@@ -14,7 +14,9 @@ class CoffeeViewModel(private val productRepository: ProductRepository) : ViewMo
 
     fun loadCoffees() {
         viewModelScope.launch {
-            _coffees.value = productRepository.getAllProducts()
+            val products = productRepository.getAllProducts()
+            println("DEBUG: CoffeeViewModel loaded ${products.size} products: ${products.map { it.name }}")
+            _coffees.value = products
         }
     }
 }

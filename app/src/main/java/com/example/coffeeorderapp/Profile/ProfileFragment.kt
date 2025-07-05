@@ -15,6 +15,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as? com.example.coffeeorderapp.MainActivity)?.hideBottomNav()
+        
+        // Refresh profile data to ensure it's loaded
+        viewModel.refreshProfile()
+        
         val composeView = ComposeView(requireContext())
         composeView.setContent {
             ProfileScreen(viewModel) {

@@ -6,7 +6,11 @@ import kotlinx.coroutines.withContext
 
 class ProfileRepository(private val profileDao: ProfileDao) {
     suspend fun getProfile(): ProfileEntity? = withContext(Dispatchers.IO) {
-        profileDao.getProfile()
+        val count = profileDao.getProfileCount()
+        println("DEBUG: ProfileRepository - Total profiles in database: $count")
+        val profile = profileDao.getProfile()
+        println("DEBUG: ProfileRepository.getProfile() returned: $profile")
+        profile
     }
 
     suspend fun updateProfile(profile: ProfileEntity) = withContext(Dispatchers.IO) {
