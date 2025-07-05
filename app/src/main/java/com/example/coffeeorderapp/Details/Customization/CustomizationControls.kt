@@ -41,14 +41,17 @@ fun CoffeeDetailScreen(
     onIceChange: (IceAmount) -> Unit,
     calculatedPrice: Double,
     onBack: () -> Unit,
-    onAddToCart: () -> Unit
+    onAddToCart: () -> Unit,
+    onCartClick: () -> Unit
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(
+            CenterAlignedTopAppBar(
                 title = { Text("Details", fontFamily = poppinsRegular) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) {
+                    IconButton(onClick = onBack,
+                        modifier = Modifier.padding(start = 16.dp)
+                        ) {
                         Icon(
                             painterResource(R.drawable.left_arrow), 
                             contentDescription = "Back",
@@ -57,7 +60,9 @@ fun CoffeeDetailScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { /* to cart */ }) {
+                    IconButton(onClick = onCartClick,
+                        modifier = Modifier.padding(end = 16.dp)
+                        ) {
                         Icon(
                             painter = painterResource(R.drawable.buy),
                             contentDescription = "Cart",
@@ -65,7 +70,7 @@ fun CoffeeDetailScreen(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(containerColor = Color.Transparent)
             )
         },
         bottomBar = {
@@ -73,7 +78,7 @@ fun CoffeeDetailScreen(
                 onClick = onAddToCart,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 32.dp, vertical = 16.dp),
+                    .padding(horizontal = 32.dp, vertical = 32.dp),
                 shape = RoundedCornerShape(24.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.grey_navy))
             ) {

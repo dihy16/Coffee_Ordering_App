@@ -17,7 +17,11 @@ data class CartItem(val coffee: com.example.coffeeorderapp.HomePage.Data.Coffee,
 
 object CartRepository {
     private val cartItems = mutableListOf<CartItem>()
-    fun addItem(item: CartItem) { cartItems.add(item) }
+    fun addItem(item: CartItem) { 
+        android.util.Log.d("CartRepository", "Adding item: ${item.coffee.name}, price: ${item.totalPrice}")
+        cartItems.add(item) 
+        android.util.Log.d("CartRepository", "Total items in cart: ${cartItems.size}")
+    }
     fun getItems(): List<CartItem> = cartItems.toList()
     fun clear() { cartItems.clear() }
 }

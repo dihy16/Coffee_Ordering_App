@@ -7,4 +7,5 @@
     <color name="detail_bg">#F7F8FB</color>
     <color name="text_detail_color">#001833</color>
     <color name="divider">#F4F5F7</color>
+    <color name="cart_item_secondary_text">#B0B4BA</color>
 </resources>

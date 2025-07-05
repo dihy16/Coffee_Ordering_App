@@ -16,6 +16,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.platform.ComposeView
 import com.example.coffeeorderapp.Details.Customization.CoffeeDetailScreen
 import com.example.coffeeorderapp.Details.Customization.CoffeeCustomization
+import com.example.coffeeorderapp.Details.ViewModel.DetailsViewModel
 
 class DetailsFragment : Fragment(R.layout.fragment_details) {
     private val args: DetailsFragmentArgs by navArgs()
@@ -59,7 +60,11 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
                         calculatedPrice  = calculatedPrice,
                         onBack           = { findNavController().navigateUp() },
                         onAddToCart      = {
+                            android.util.Log.d("DetailsFragment", "Add to cart clicked for: ${it.name}")
                             viewModel.addToCartWithCustomization(it)
+                        },
+                        onCartClick      = {
+                            findNavController().navigate(R.id.action_detailsFragment_to_cartFragment)
                         }
                     )
                 }
@@ -68,8 +73,13 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
 
         // 3) Navigate after add-to-cart
         viewModel.addToCartEvent.observe(viewLifecycleOwner) {
+            android.util.Log.d("DetailsFragment", "Add to cart event triggered")
             Toast.makeText(requireContext(), "Added to cart!", Toast.LENGTH_SHORT).show()
-            findNavController().navigate(R.id.ordersFragment)
+            // Navigate to cart with popUpTo to clear back stack
+            val navOptions = androidx.navigation.NavOptions.Builder()
+                .setPopUpTo(R.id.homeFragment, false)
+                .build()
+            findNavController().navigate(R.id.cartFragment, null, navOptions)
         }
     }
 
@@ -81,8 +91,13 @@ class DetailsFragment : Fragment(R.layout.fragment_details) {
         else         -> 4.00
     }
 
-    override fun onDestroyView() {
+    override fun onResume() {
+        super.onResume()
+        (activity as? MainActivity)?.hideBottomNav()
+    }
+
+    override fun onPause() {
         (activity as? MainActivity)?.showBottomNav()
-        super.onDestroyView()
+        super.onPause()
     }
 }

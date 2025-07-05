@@ -1,4 +1,4 @@
-package com.example.coffeeorderapp.Details
+package com.example.coffeeorderapp.Details.ViewModel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -60,7 +60,11 @@ class DetailsViewModel : ViewModel() {
 
     fun addToCartWithCustomization(coffee: Coffee) {
         val custom = _customization.value ?: CoffeeCustomization()
-        CartRepository.addItem(CartItem(coffee, custom, _price.value ?: 3.0))
+        val currentPrice = _price.value ?: 3.0
+        // Use the stored coffee object which has the correct price
+        val storedCoffee = _coffee.value ?: coffee
+        android.util.Log.d("DetailsViewModel", "Adding to cart: ${storedCoffee.name}, price: $currentPrice, quantity: ${custom.quantity}")
+        CartRepository.addItem(CartItem(storedCoffee, custom, currentPrice))
         _addToCartEvent.value = Unit
     }
 } 
